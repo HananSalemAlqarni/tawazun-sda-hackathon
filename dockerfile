@@ -1,7 +1,7 @@
-FROM maven:3.8.6-openjdk-11
-ENV DB_URL=localhost
+FROM maven:3.8.6-openjdk-11 as maven
+ENV DB_URL=mysql
 ENV DB_PORT=3306
-ENV DB_NAME=tawazun
+ENV DB_NAME=tawazun 
 ENV DB_USERNAME=root
 ENV DB_PASSWORD=DevOps2022
 WORKDIR /app
