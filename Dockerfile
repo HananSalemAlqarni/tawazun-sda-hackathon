@@ -14,4 +14,4 @@ FROM openjdk:11-jre-slim
 
 COPY --from=build /app/target/tawazun.war /
 
-CMD ["java", "-jar", "target/tawazun.war"]
+CMD ["java", "-jar", "/tawazun.war"]
