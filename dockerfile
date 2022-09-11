@@ -1,7 +1,7 @@
-FROM maven:3.8.6-jdk-11 AS build
-EXPOSE 8080
-WORKDIR /var/www
-COPY . .
-RUN mvn package
-
-CMD ["catalina.sh", "run"]
+FROM openjdk:8-jdk-alpine
+VOLUME /tmp
+ARG JAVA_OPTS
+ENV JAVA_OPTS=$JAVA_OPTS
+COPY target/login-0.0.1-SNAPSHOT.jar tawazon.jar
+EXPOSE 3000
+ENTRYPOINT exec java $JAVA_OPTS -jar tawazon.jar
