@@ -1,16 +1,16 @@
-FROM node:latest
-
+FROM maven:3.6.0-jdk-11-slim AS build
 LABEL author="Hanan alqarni"
+WORKDIR /app
 
-EXPOSE 3000
-RUN useradd -rm -d /home/ubuntu -s /bin/bash -g root -G sudo -u 1001 ubuntu
-USER ubuntu
-WORKDIR /home/ubuntu
+COPY pom.xml /app/pom.xml
+RUN ["mvn", "dependency:resolve"]
+RUN ["mvn", "compile"]
 
+COPY ["src/main", "/app/src/main"]
+RUN ["mvn", "package"]
 
-COPY . /home/ubuntu
-RUN npm install
+FROM openjdk:11-jre-slim
 
-VOLUME [ "/var/www" ]
+COPY --from=target /app/target/tawazun-sda-hackathon.war /
 
-CMD [ "npm","start" ]
+CMD ["java", "-XX:+UnlockExperimentalVMOptions", "-XX:+UseCGroupMemoryLimitForHeap", "-jar", "/tawazun-sda-hackathon.war"]
