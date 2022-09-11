@@ -1,6 +1,7 @@
 FROM maven:3.6.0-jdk-11-slim AS build
 LABEL author="Hanan alqarni"
 WORKDIR /app
+EXPOSE 3000
 
 COPY pom.xml /app/pom.xml
 RUN ["mvn", "dependency:resolve"]
@@ -11,6 +12,6 @@ RUN ["mvn", "package"]
 
 FROM openjdk:11-jre-slim
 
-COPY --from=target /app/target/tawazun-sda-hackathon.war /
+COPY --from=target /app/target/tawazun.war /
 
-CMD ["java", "-XX:+UnlockExperimentalVMOptions", "-XX:+UseCGroupMemoryLimitForHeap", "-jar", "/tawazun-sda-hackathon.war"]
+CMD ["java", "-XX:+UnlockExperimentalVMOptions", "-XX:+UseCGroupMemoryLimitForHeap", "-jar", "/tawazun.war"]
