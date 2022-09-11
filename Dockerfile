@@ -1,17 +1,16 @@
-FROM maven:3.6.3-openjdk-11 AS build
+FROM maven:3.6.0-jdk-11-slim AS build
 LABEL author="Hanan alqarni"
 WORKDIR /app
-EXPOSE 3000
 
 COPY pom.xml /app/pom.xml
 RUN ["mvn", "dependency:resolve"]
 RUN ["mvn", "clean"]
-COPY ["src/main", "/app/src/main"]
+COPY ["/src", "/app/src"]
 RUN ["mvn", "package"]
 
-FROM openjdk:11-jre
+FROM openjdk:11-jre-slim
 
 COPY --from=build /app/target/tawazun.war /
 
-
-CMD ["java", "-XX:+UnlockExperimentalVMOptions", "-XX:+UseCGroupMemoryLimitForHeap", "-war", "/tawazun.war"]
+EXPOSE 8080
+CMD ["java", "-jar", "/tawazun.war"]
