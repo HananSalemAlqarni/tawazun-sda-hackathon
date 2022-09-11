@@ -1,4 +1,4 @@
-FROM maven:3.8.6-openjdk-11 as maven
+FROM maven:3.8.6-openjdk-11
 ENV DB_URL=mysql
 ENV DB_PORT=3306
 ENV DB_NAME=tawazun 
