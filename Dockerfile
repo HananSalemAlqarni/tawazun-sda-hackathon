@@ -1,17 +1,8 @@
-FROM maven:3.6.0-jdk-11-slim AS build
-
+FROM maven:3.8.6-openjdk-11
 WORKDIR /app
+ADD pom.xml .
+RUN ["/usr/local/bin/mvn-entrypoint.sh", "mvn", "verify", "clean", "--fail-never"]
+COPY . .
+RUN mvn package
 EXPOSE 8080
-COPY pom.xml /app/pom.xml
-RUN ["mvn", "dependency:resolve"]
-RUN ["mvn", "clean"]
-
-COPY ["/src", "/app/src"]
-RUN ["mvn", "package"]
-
-FROM openjdk:11-jre-slim
-
-COPY --from=build /app/target/tawazun.war /
-
-
-CMD ["java", "-jar", "/tawazun.war"]
+ENTRYPOINT ["java","-jar","./target/tawazun.war"]
