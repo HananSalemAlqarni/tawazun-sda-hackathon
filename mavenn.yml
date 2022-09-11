@@ -1,0 +1,159 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tawazun-deploy
+  namespace: hanan-tawazun
+  labels:
+    app: tawazun
+    service: tawazun-svc
+    name: hanan
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tawazun
+      service: tawazun-svc
+  template:
+    metadata:
+      labels:
+        app: tawazun
+        service: tawazun-svc
+    spec:
+      containers:
+        - image: mshaikh911/tawazun
+          name: tawazun
+          resources: 
+            requests: 
+              memory: 250Mi
+              cpu: "250m"
+            limits:
+              memory: 512Mi
+              cpu: "500m"
+          ports:
+            - containerPort: 8080
+
+#------deb-scv-----
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tawazun-svc
+  namespace: hanan-tawazun
+  labels: 
+    name: hanan
+spec:
+  selector:
+    app: tawazun
+    service: tawazun-svc
+  ports:
+    - port: 80 
+      targetPort: 8080
+  type: LoadBalancer  
+  
+
+#------deb-sql-----
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sql
+  namespace: hanan-tawazun
+  labels:
+    app: sql
+    name: hanan
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sql
+  template:
+    metadata:
+      labels:
+        app: sql
+    spec:
+      volumes:
+        - name: sql-pv-claim
+          persistentVolumeClaim:
+            claimName: sql-pv-claim
+      containers:
+        - image: mysql
+          name: mysql
+          resources: 
+            requests: 
+              memory: 250Mi
+              cpu: "250m"
+            limits:
+              memory: 512Mi
+              cpu: "500m"
+          env:
+            - name: MYSQL_USER
+              value: "mysql"
+            - name: MYSQL_DATABASE
+              value: "mysql"
+            - name: MYSQL_PASSWORD
+              value: "mysql"
+            - name: MYSQL_ROOT_PASSWORD
+              value: "mysql"
+          ports:
+            - containerPort: 3306
+          volumeMounts:
+            - mountPath: /var/lib/mysql
+              name: sql-pv-claim
+#-----sql svc -----
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cluster-ip-service
+  namespace: hanan-tawazun
+  labels:
+    app: sql
+    name: hanan
+spec:
+  type: ClusterIP
+  ports:
+    - name: sql-port
+      port: 3306
+      targetPort: 3306
+      protocol: TCP
+  selector:
+    app: sql
+
+
+#-- sql pv ---
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: sql-pv
+  namespace: hanan-tawazun
+  labels:
+    type: local
+    app: sql
+spec:
+  #storageClassName: local-path
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/mnt/data"
+
+
+#---sql pvc ---
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: sql-pv-claim
+  namespace: hanan-tawazun
+  labels:
+    app: sql
+spec:
+  #storageClassName: local-path
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 4Gi
