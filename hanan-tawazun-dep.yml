@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hanan-tawazun-dep
+  labels:
+    name: Hanan
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tawazun
+  template:
+    metadata:
+      labels:
+        app: tawazun
+    spec:
+      containers:
+        - image: hanan/tawazun:latest
+          name: tawazun
+          env:
+            - name: DB_URL
+              value: mysql-tawazun
+            - name: DB_PORT
+              value: '3306'  
+            - name: DB_NAME
+              value: tawazun  
+            - name: DB_USERNAME
+              value: root  
+            - name: DB_PASSWORD
+              value: DevOps2022 
+          ports:
+          - containerPort: 8080

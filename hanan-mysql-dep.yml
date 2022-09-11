@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tawazun-mysql
+  labels:
+    name: Hanan
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tawazun-mysql
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: tawazun-mysql
+    spec:
+      containers:
+        - image: mysql:latest
+          name: mysql-tawazun
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: DevOps2022
+            - name: MYSQL_DATABASE
+              value: tawazun   
+          ports:
+            - containerPort: 3306
+          volumeMounts:
+            - name: mysql-persistent-storage
+              mountPath: /var/lib/mysql
+      volumes:
+        - name: mysql-persistent-storage
+          persistentVolumeClaim:
+            claimName: tawazn-mysql-pv-claim
