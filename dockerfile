@@ -1,13 +1,17 @@
-FROM maven:3.8.6-openjdk-11
-ENV DB_URL=localhost
-ENV DB_PORT=3306
-ENV DB_NAME=tawazun
-ENV DB_USERNAME=root
-ENV DB_PASSWORD=DevOps2022
+FROM maven:3.6.0-jdk-11-slim AS build
+
 WORKDIR /app
-ADD pom.xml .
-RUN ["/usr/local/bin/mvn-entrypoint.sh","mvn","verify","clean","--fail-never"]
-COPY . .
-RUN mvn package
+
+COPY pom.xml /app/pom.xml
+RUN ["mvn", "dependency:resolve"]
+RUN ["mvn", "clean"]
+
+COPY ["/src", "/app/src"]
+RUN ["mvn", "package"]
+
+FROM openjdk:11-jre-slim
+
+COPY --from=build /app/target/tawazun.war /
+
 EXPOSE 8080
-ENTRYPOINT ["java","-jar","target/tawazun.war"]
+CMD ["java", "-jar", "/tawazun.war"]
