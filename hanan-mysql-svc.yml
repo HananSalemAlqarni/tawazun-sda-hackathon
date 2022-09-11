@@ -1,14 +1,17 @@
 apiVersion: v1
-kind: PersistentVolumeClaim
+kind: Service
 metadata:
-  name: sql-pv-claim
+  name: cluster-ip-service
   namespace: hanan-tawazun
   labels:
     app: sql
+    name: hanan
 spec:
-  #storageClassName: local-path
-  accessModes:
-  - ReadWriteOnce
-  resources:
-    requests:
-      storage: 4Gi
+  type: ClusterIP
+  ports:
+    - name: sql-port
+      port: 3306
+      targetPort: 3306
+      protocol: TCP
+  selector:
+    app: sql
