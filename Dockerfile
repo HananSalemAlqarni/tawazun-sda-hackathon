@@ -1,6 +1,7 @@
 FROM maven:3.6.3-openjdk-11 AS build
 LABEL author="Hanan alqarni"
 WORKDIR /app
+EXPOSE 3000
 
 COPY pom.xml /app/pom.xml
 RUN ["mvn", "dependency:resolve"]
@@ -12,5 +13,5 @@ FROM openjdk:11-jre
 
 COPY --from=build /app/target/tawazun.war /
 
-EXPOSE 8080
+
 CMD ["java", "-XX:+UnlockExperimentalVMOptions", "-XX:+UseCGroupMemoryLimitForHeap", "-war", "/tawazun.war"]
