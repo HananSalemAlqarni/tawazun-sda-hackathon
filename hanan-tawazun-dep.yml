@@ -15,7 +15,7 @@ spec:
         app: tawazun
     spec:
       containers:
-        - image: hanan/tawazun:latest
+        - image: hanansalem88/tawazun-sda-hackathon99:latest
           name: tawazun
           env:
             - name: DB_URL
