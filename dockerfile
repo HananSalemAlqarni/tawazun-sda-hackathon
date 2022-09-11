@@ -8,10 +8,5 @@ RUN ["mvn", "clean"]
 
 COPY ["/src", "/app/src"]
 RUN ["mvn", "package"]
-
-FROM openjdk:11-jre-slim
-
-COPY --from=build /app/target/tawazun.war /
-
 EXPOSE 8080
 CMD ["java", "-jar", "/tawazun.war"]
