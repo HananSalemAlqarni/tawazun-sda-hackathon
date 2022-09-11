@@ -1,7 +1,12 @@
-FROM openjdk:8-jdk-alpine
-VOLUME /tmp
-ARG JAVA_OPTS
-ENV JAVA_OPTS=$JAVA_OPTS
-COPY target/login-0.0.1-SNAPSHOT.jar tawazon.jar
-EXPOSE 3000
-ENTRYPOINT exec java $JAVA_OPTS -jar tawazon.jar
+FROM maven:3.6.0-jdk-11-slim AS build
+
+WORKDIR /app
+
+COPY pom.xml /app/pom.xml
+RUN ["mvn", "dependency:resolve"]
+RUN ["mvn", "clean"]
+
+COPY ["/src", "/app/src"]
+RUN ["mvn", "package"]
+EXPOSE 8080
+CMD ["java", "-jar", "/tawazun.war"]
