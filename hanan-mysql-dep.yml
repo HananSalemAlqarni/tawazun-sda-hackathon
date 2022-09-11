@@ -1,35 +1,46 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: tawazun-mysql
+  name: sql
+  namespace: hanan-tawazun
   labels:
-    name: Hanan
+    app: sql
+    name: hanan
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: tawazun-mysql
-  strategy:
-    type: Recreate
+      app: sql
   template:
     metadata:
       labels:
-        app: tawazun-mysql
+        app: sql
     spec:
+      volumes:
+        - name: sql-pv-claim
+          persistentVolumeClaim:
+            claimName: sql-pv-claim
       containers:
-        - image: mysql:latest
-          name: mysql-tawazun
+        - image: mysql
+          name: mysql
+          resources: 
+            requests: 
+              memory: 250Mi
+              cpu: "250m"
+            limits:
+              memory: 512Mi
+              cpu: "500m"
           env:
-            - name: MYSQL_ROOT_PASSWORD
-              value: DevOps2022
+            - name: MYSQL_USER
+              value: "mysql"
             - name: MYSQL_DATABASE
-              value: tawazun   
+              value: "mysql"
+            - name: MYSQL_PASSWORD
+              value: "mysql"
+            - name: MYSQL_ROOT_PASSWORD
+              value: "mysql"
           ports:
             - containerPort: 3306
           volumeMounts:
-            - name: mysql-persistent-storage
-              mountPath: /var/lib/mysql
-      volumes:
-        - name: mysql-persistent-storage
-          persistentVolumeClaim:
-            claimName: tawazn-mysql-pv-claim
+            - mountPath: /var/lib/mysql
+              name: sql-pv-claim

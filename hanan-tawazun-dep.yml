@@ -1,32 +1,33 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: hanan-tawazun-dep
+  name: tawazun-deploy
+  namespace: hanan-tawazun
   labels:
-    name: Hanan
+    app: tawazun
+    service: tawazun-svc
+    name: hanan
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: tawazun
+      service: tawazun-svc
   template:
     metadata:
       labels:
         app: tawazun
+        service: tawazun-svc
     spec:
       containers:
-        - image: hanansalem88/tawazun-sda-hackathon99:latest
+        - image: mshaikh911/tawazun
           name: tawazun
-          env:
-            - name: DB_URL
-              value: mysql-tawazun
-            - name: DB_PORT
-              value: '3306'  
-            - name: DB_NAME
-              value: tawazun  
-            - name: DB_USERNAME
-              value: root  
-            - name: DB_PASSWORD
-              value: DevOps2022 
+          resources: 
+            requests: 
+              memory: 250Mi
+              cpu: "250m"
+            limits:
+              memory: 512Mi
+              cpu: "500m"
           ports:
-          - containerPort: 8080
+            - containerPort: 8080

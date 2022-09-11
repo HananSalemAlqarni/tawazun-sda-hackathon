@@ -1,9 +1,9 @@
 FROM maven:3.8.6-openjdk-11
-ENV DB_URL=mysql
+ENV DB_URL=cluster
 ENV DB_PORT=3306
-ENV DB_NAME=tawazun 
-ENV DB_USERNAME=root
-ENV DB_PASSWORD=DevOps2022
+ENV DB_NAME=mysql
+ENV DB_USERNAME=dbSql
+ENV DB_PASSWORD=passwd
 WORKDIR /app
 ADD pom.xml .
 RUN ["/usr/local/bin/mvn-entrypoint.sh","mvn","verify","clean","--fail-never"]

@@ -1,13 +1,14 @@
 apiVersion: v1
-kind: Service
+kind: PersistentVolumeClaim
 metadata:
-  name: tawazun-mysql-service
+  name: sql-pv-claim
+  namespace: hanan-tawazun
   labels:
-    name: Hanan
+    app: sql
 spec:
-  selector:
-    app: mysql-tawazun
-  type: ClusterIP
-  ports:
-  - protocol: TCP
-    port: 3306 
+  #storageClassName: local-path
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 4Gi
